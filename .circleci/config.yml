@@ -17,6 +17,8 @@ jobs:
             
   restore:
     description: Build application with Release configuration
+    executor:
+      name: docker
     steps:     
       - run:
           name: dotnet restore
