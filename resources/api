@@ -1,0 +1,34 @@
+
+Without Credentials
+-------------------
+curl 'http://10.100.52.74:8153/go/api/pipelines/CI_Sp/schedule' \
+       -H 'Accept: application/vnd.go.cd.v1+json' \
+	   -H 'X-GoCD-Confirm: true' \
+       -H 'Content-Type: application/json' \
+       -X POST
+       
+       
+Bearer token 
+-------------
+curl 'http://3.237.30.117:8153/go/api/pipelines/testpiper/schedule' \
+      -H 'Authorization: bearer YOURTOKEN' \
+       -H 'Accept: application/vnd.go.cd.v1+json' \
+	   -H 'X-GoCD-Confirm: true' \
+       -H 'Content-Type: application/json' \
+       -X POST
+       
+Bearer token with env varibles
+------------------------------
+curl 'http://3.237.30.117:8153/go/api/pipelines/testpiper/schedule' \
+       -H 'Authorization: bearer yourtoken' \
+       -H 'Accept: application/vnd.go.cd.v1+json' \
+	   -H 'X-GoCD-Confirm: true' \
+       -H 'Content-Type: application/json' \
+       -X POST \
+	   -d '{
+       "environment_variables": [
+         {
+           "name": "AppName",
+           "secure": false,
+           "value": "MyGame"
+         }]}'
