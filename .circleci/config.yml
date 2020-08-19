@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: Installing deployment dependencies
-          working_directory: /
+          working_directory: ~/repo
           command: |
             apt-get -y -qq update
             apt-get install -y python-pip python-dev build-essential
@@ -17,9 +17,9 @@ jobs:
 
       - run:
           name: dotnet restore
-          working_directory: /
+          working_directory: ~/repo
           command: |
-            dotnet restore
+            dotnet restore 
             
 workflows:
   version: 2
