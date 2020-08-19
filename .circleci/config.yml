@@ -30,6 +30,11 @@ jobs:
           working_directory: ~/repo
           command: |
             dotnet publish -c debug 
+      - run:
+          name: eb try 
+          working_directory: ~/repo
+          command: |
+            eb list        
 workflows:
   version: 2
   build-deploy:
