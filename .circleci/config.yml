@@ -27,7 +27,6 @@ jobs:
             dotnet restore 
   build:
     docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk
     description: Build application with Release configuration
     steps:     
       - run:
