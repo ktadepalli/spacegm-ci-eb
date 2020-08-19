@@ -31,6 +31,15 @@ jobs:
       - run:
           name: "Build Application according to some given configuration"
           command: dotnet.exe build --configuration Release
+  publish:
+    description: publish code
+    executor:
+      name: windows/default
+    steps:
+      - checkout
+      - run:
+          name: "publish in debug mode"
+          command: dotnet.exe publish -c debug
 workflows:
   test_and_build:
     jobs:
@@ -38,3 +47,6 @@ workflows:
       - build:
           requires:
             - test
+      - deploy:
+          requires:
+            - build
