@@ -30,6 +30,7 @@ jobs:
           working_directory: ~/repo
           command: |
             dotnet publish -c debug -o  ~/repo/artifact
+            cp ~/repo/aws-windows-deployment-manifest.json ~/repo/artifact
       - store_artifacts:
           path: ~/repo/artifact
       - run:
