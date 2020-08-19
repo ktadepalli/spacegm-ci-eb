@@ -12,8 +12,8 @@ jobs:
           command: |
             apt-get -y -qq update
             apt-get install -y python-pip python-dev build-essential
-            pip install -y --upgrade setuptools
-            pip install -y awsebcli --upgrade
+            pip install  --upgrade setuptools
+            pip install  awsebcli --upgrade
 
       - run:
           name: dotnet restore
