@@ -16,6 +16,8 @@ jobs:
             pip install  awsebcli --upgrade
             
   restore:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk
     description: Build application with Release configuration
     steps:     
       - run:
@@ -24,6 +26,8 @@ jobs:
           command: |
             dotnet restore 
   build:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk
     description: Build application with Release configuration
     steps:     
       - run:
@@ -32,6 +36,8 @@ jobs:
           command: |
             dotnet build  
   publish:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk
     description: Build application with Release configuration
     steps:     
       - run:
@@ -41,6 +47,8 @@ jobs:
             dotnet publish -c debug -o  ~/repo/artifact
             cp ~/repo/aws-windows-deployment-manifest.json ~/repo/artifact           
   deploy:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk
     description: Build application with Release configuration
     steps:     
       - run:
