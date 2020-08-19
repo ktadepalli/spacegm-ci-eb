@@ -1,52 +1,33 @@
-version: 2.1
-
-orbs:
-  windows: circleci/windows@2.2.0
-
+version: 2
 jobs:
-  test:
-    description: Setup and run application tests
-    executor:
-      name: windows/default
+  deploy:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk
+    working_directory: ~/repo
     steps:
       - checkout
       - run:
-          name: "Install project dependencies"
-          command: dotnet.exe restore
-    
+          name: Installing deployment dependencies
+          working_directory: /
+          command: |
+            sudo apt-get -y -qq update
+            sudo apt-get install python-pip python-dev build-essential
+            sudo pip install --upgrade setuptools
+            sudo pip install awsebcli --upgrade
+
       - run:
-          name: "Run Application Tests"
-          command: dotnet.exe test -v n --results-directory:test_coverage --collect:"Code Coverage"
-      - run:
-          name: "Print Working Directory"
-          command: pwd
-      - store_artifacts:
-          path: C:\Users\circleci\project\test_coverage
-  build:
-    description: Build application with Release configuration
-    executor:
-      name: windows/default
-    steps:
-      - checkout
-      - run:
-          name: "Build Application according to some given configuration"
-          command: dotnet.exe build --configuration Release
-  publish:
-    description: publish code
-    executor:
-      name: windows/default
-    steps:
-      - checkout
-      - run:
-          name: "publish in debug mode"
-          command: dotnet.exe publish -c debug
+          name: dotnet restore
+          working_directory: /
+          command: |
+            dotnet restore
+            
 workflows:
-  test_and_build:
+  version: 2
+  build-deploy:
     jobs:
-      - test
-      - build:
-          requires:
-            - test
-      - publish:
-          requires:
-            - build
+      - deploy:
+          filters:
+            branches:
+              only:
+                - master
+                - develop
