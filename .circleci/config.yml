@@ -30,11 +30,14 @@ jobs:
           working_directory: ~/repo
           command: |
             dotnet publish -c debug 
+      - store_artifacts:
+          path: ~/repo/artifact
       - run:
           name: eb try 
-          working_directory: ~/repo
+          working_directory: ~/repo/artifact
           command: |
-            eb list        
+            pwd
+            eb init         
 workflows:
   version: 2
   build-deploy:
