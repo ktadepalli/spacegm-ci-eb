@@ -15,7 +15,7 @@ jobs:
             pip install  --upgrade setuptools
             pip install  awsebcli --upgrade
             
-   restore:
+  restore:
     description: Build application with Release configuration
     steps:     
       - run:
@@ -23,7 +23,7 @@ jobs:
           working_directory: ~/repo
           command: |
             dotnet restore 
-   build:
+  build:
     description: Build application with Release configuration
     steps:     
       - run:
@@ -31,7 +31,7 @@ jobs:
           working_directory: ~/repo
           command: |
             dotnet build  
-   publish:
+  publish:
     description: Build application with Release configuration
     steps:     
       - run:
@@ -40,7 +40,7 @@ jobs:
           command: |
             dotnet publish -c debug -o  ~/repo/artifact
             cp ~/repo/aws-windows-deployment-manifest.json ~/repo/artifact           
-    deploy:
+  deploy:
     description: Build application with Release configuration
     steps:     
       - run:
