@@ -43,9 +43,9 @@ jobs:
             echo "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/repo/artifact/.aws/config
       - run:
           name: Deploy to EB if branch is Master
+          working_directory: ~/repo/artifact
           command: |
-            eb use circleci-beanstalk-example --profile kenani --region us-east-1
-            eb init --region us-east-1 --platform Docker circleci-beanstalk-example        
+            eb init --region us-east-1 --platform iis-10.0 circleci-beanstalk-example        
 workflows:
   version: 2
   build-deploy:
