@@ -17,8 +17,6 @@ jobs:
             
   restore:
     description: Build application with Release configuration
-    executor:
-      name: docker
     steps:     
       - run:
           name: dotnet restore
@@ -71,22 +69,30 @@ workflows:
                 - master
                 
       - restore:
+          requires:
+            - checkout
           filters:
             branches:
               only:
                 - master     
       - build:
+          requires:
+            - restore
           filters:
             branches:
               only:
                 - master
       - publish:
+          requires:
+            - build
           filters:
             branches:
               only:
                 - master
       - deploy:
+          requires:
+            - publish
           filters:
             branches:
               only:
-                - master              
+                - master          
