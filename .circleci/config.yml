@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  deploy:
+  checkout:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk
     working_directory: ~/repo
@@ -14,25 +14,35 @@ jobs:
             apt-get install -y python-pip python-dev build-essential
             pip install  --upgrade setuptools
             pip install  awsebcli --upgrade
-
+            
+   restore:
+    description: Build application with Release configuration
+    steps:     
       - run:
           name: dotnet restore
           working_directory: ~/repo
           command: |
             dotnet restore 
+   build:
+    description: Build application with Release configuration
+    steps:     
       - run:
           name: dotnet restore
           working_directory: ~/repo
           command: |
-            dotnet build 
+            dotnet build  
+   publish:
+    description: Build application with Release configuration
+    steps:     
       - run:
-          name: dotnet publish
+          name: dotnet restore
           working_directory: ~/repo
           command: |
             dotnet publish -c debug -o  ~/repo/artifact
-            cp ~/repo/aws-windows-deployment-manifest.json ~/repo/artifact
-      - store_artifacts:
-          path: ~/repo/artifact
+            cp ~/repo/aws-windows-deployment-manifest.json ~/repo/artifact           
+    deploy:
+    description: Build application with Release configuration
+    steps:     
       - run:
           name: Create AWS credentials manually
           command: |
@@ -47,14 +57,34 @@ jobs:
           working_directory: ~/repo/artifact
           command: |
             eb init --region us-east-1 --platform iis-10.0 circleci-beanstalk-example2 
-            eb create circleci-beanstalk-example-test2
+            eb deploy circleci-beanstalk-example-test2
 workflows:
   version: 2
   build-deploy:
     jobs:
-      - deploy:
+      - checkout:
           filters:
             branches:
               only:
                 - master
-                - develop
+                
+      - restore:
+          filters:
+            branches:
+              only:
+                - master     
+      - build:
+          filters:
+            branches:
+              only:
+                - master
+      - publish:
+          filters:
+            branches:
+              only:
+                - master
+      - deploy:
+          filters:
+            branches:
+              only:
+                - master              
