@@ -1,7 +1,6 @@
 version: 2
 
 _defaults: &defaults
-  working_directory: ~/repo
   docker:
     - image: mcr.microsoft.com/dotnet/core/sdk
 jobs:
