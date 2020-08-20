@@ -1,11 +1,41 @@
 version: 2
+
+_defaults: &defaults
+  working_directory: ~/repo
+  docker:
+   - image: mcr.microsoft.com/dotnet/core/sdk
 jobs:
-  deploy:
-    docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk
-    working_directory: ~/repo
-    steps:
+  publish:
+    <<: *defaults
+    description: Build application with Release configuration
+    steps:     
       - checkout
+      - run:
+          name: dotnet restore
+          working_directory: ~/repo
+          command: |
+            dotnet restore 
+      - run:
+          name: dotnet build
+          working_directory: ~/repo
+          command: |
+            dotnet build  
+      - run:
+          name: dotnet restore
+          working_directory: ~/repo
+          command: |
+            dotnet publish -c debug -o  ~/repo/artifact
+            cp ~/repo/aws-windows-deployment-manifest.json ~/repo/artifact 
+      - persist_to_workspace:
+          root: ~/repo/artifact
+          paths:
+            - .
+  deploy:
+    <<: *defaults
+    description: Build application with Release configuration
+    steps:     
+      - attach_workspace:
+          at: ~/repo/artifact
       - run:
           name: Installing deployment dependencies
           working_directory: ~/repo
@@ -14,24 +44,6 @@ jobs:
             apt-get install -y python-pip python-dev build-essential
             pip install  --upgrade setuptools
             pip install  awsebcli --upgrade
-      - run:
-          name: dotnet restore
-          working_directory: ~/repo
-          command: |
-            dotnet restore 
-      - run:
-          name: dotnet restore
-          working_directory: ~/repo
-          command: |
-            dotnet build 
-      - run:
-          name: dotnet publish
-          working_directory: ~/repo
-          command: |
-            dotnet publish -c debug -o  ~/repo/artifact
-            cp ~/repo/aws-windows-deployment-manifest.json ~/repo/artifact
-      - store_artifacts:
-          path: ~/repo/artifact
       - run:
           name: Create AWS credentials manually
           command: |
@@ -45,15 +57,24 @@ jobs:
           name: Deploy to EB if branch is Master
           working_directory: ~/repo/artifact
           command: |
-            eb init --region us-east-1 --platform iis-10.0 circleci-beanstalk-example2 
-            eb create circleci-beanstalk-example-test2
+            eb init --region us-east-1 --platform iis-10.0 circleci-beanstalk-example 
+            eb deploy circleci-beanstalk-example-master
+             # eb create circleci-beanstalk-example-master
+            
 workflows:
   version: 2
   build-deploy:
     jobs:
-      - deploy:
+
+      - publish:
           filters:
             branches:
               only:
                 - master
-                - develop
+      - deploy:
+          requires:
+            - publish
+          filters:
+            branches:
+              only:
+                - master        
