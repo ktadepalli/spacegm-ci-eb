@@ -9,9 +9,9 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      -run
-      command: |
-        mkdir ~/repo/artifact
+      - run:
+         command: |
+           mkdir ~/repo/artifact
       - persist_to_workspace:
           root: ~/repo
           paths:
