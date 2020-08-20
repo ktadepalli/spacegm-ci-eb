@@ -55,13 +55,17 @@ jobs:
           working_directory: ~/repo
           command: |
             dotnet publish -c debug -o  ~/repo/artifact
-            cp ~/repo/aws-windows-deployment-manifest.json ~/repo/artifact           
+            cp ~/repo/aws-windows-deployment-manifest.json ~/repo/artifact  
+      - persist_to_workspace:
+          root: ~/repo/artifact
+          paths:
+            - .
   deploy:
     <<: *defaults
     description: Build application with Release configuration
     steps:     
       - attach_workspace:
-          at: ~/repo
+          at: ~/repo/artitfact
       - run:
           name: Create AWS credentials manually
           command: |
