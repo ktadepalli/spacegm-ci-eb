@@ -37,6 +37,7 @@ jobs:
           command: |
             dotnet build  
   publish:
+    <<: *defaults
     description: Build application with Release configuration
     steps:     
       - run:
