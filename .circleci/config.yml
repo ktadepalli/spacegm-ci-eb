@@ -5,7 +5,7 @@ _defaults: &defaults
   docker:
    - image: mcr.microsoft.com/dotnet/core/sdk
 jobs:
-  publish:
+  Build:
     <<: *defaults
     description: Build application with Release configuration
     steps:     
@@ -58,8 +58,8 @@ jobs:
           working_directory: ~/repo/artifact
           command: |
             eb init --region us-east-1 --platform iis-10.0 circleci-beanstalk 
-            #eb deploy circleci-beanstalk-dev
-            eb create circleci-beanstalk-dev
+            eb deploy circleci-beanstalk-dev
+            #eb create circleci-beanstalk-dev
 workflows:
   version: 2
   publish-deploy:
