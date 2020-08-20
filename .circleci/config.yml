@@ -1,9 +1,12 @@
 version: 2
+
+_defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: mcr.microsoft.com/dotnet/core/sdk
 jobs:
   checkout:
-    docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk
-    working_directory: ~/repo
+    <<: *defaults
     steps:
       - checkout
       - run:
@@ -16,8 +19,7 @@ jobs:
             pip install  awsebcli --upgrade
             
   restore:
-    docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk
+    <<: *defaults
     description: Build application with Release configuration
     steps:     
       - run:
@@ -26,7 +28,7 @@ jobs:
           command: |
             dotnet restore 
   build:
-    docker:
+    <<: *defaults
     description: Build application with Release configuration
     steps:     
       - run:
@@ -35,8 +37,6 @@ jobs:
           command: |
             dotnet build  
   publish:
-    docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk
     description: Build application with Release configuration
     steps:     
       - run:
@@ -46,8 +46,7 @@ jobs:
             dotnet publish -c debug -o  ~/repo/artifact
             cp ~/repo/aws-windows-deployment-manifest.json ~/repo/artifact           
   deploy:
-    docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk
+    <<: *defaults
     description: Build application with Release configuration
     steps:     
       - run:
@@ -102,4 +101,4 @@ workflows:
           filters:
             branches:
               only:
-                - master          
+                - master              
