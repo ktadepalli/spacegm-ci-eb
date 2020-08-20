@@ -80,8 +80,10 @@ jobs:
           name: Deploy to EB if branch is Master
           working_directory: ~/repo/artifact
           command: |
-            eb init --region us-east-1 --platform iis-10.0 circleci-beanstalk-example2 
-            eb deploy circleci-beanstalk-example-test2
+            eb init --region us-east-1 --platform iis-10.0 circleci-beanstalk-example 
+            eb create circleci-beanstalk-example-master
+           # eb deploy circleci-beanstalk-example-test
+            
 workflows:
   version: 2
   build-deploy:
