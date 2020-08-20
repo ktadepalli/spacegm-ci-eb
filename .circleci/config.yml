@@ -4,7 +4,6 @@ _defaults: &defaults
   working_directory: ~/repo
   docker:
    - image: mcr.microsoft.com/dotnet/core/sdk
-   - resource_class: medium+	
 jobs:
   checkout:
     <<: *defaults
@@ -14,6 +13,7 @@ jobs:
           root: ~/repo
           paths:
             - .
+            - /
       - run:
           name: Installing deployment dependencies
           working_directory: ~/repo
