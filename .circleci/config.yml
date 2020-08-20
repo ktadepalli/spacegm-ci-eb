@@ -21,7 +21,7 @@ jobs:
           command: |
             dotnet build  
       - run:
-          name: dotnet restore
+          name: dotnet publish
           working_directory: ~/repo
           command: |
             dotnet publish -c debug -o  ~/repo/artifact
@@ -57,10 +57,9 @@ jobs:
           name: Deploy to EB if branch is Master
           working_directory: ~/repo/artifact
           command: |
-            eb init --region us-east-1 --platform iis-10.0 circleci-beanstalk-example 
-            eb deploy circleci-beanstalk-example-master
-             # eb create circleci-beanstalk-example-master
-            
+            eb init --region us-east-1 --platform iis-10.0 circleci-beanstalk 
+            eb create circleci-beanstalk-dev
+            # eb deploy circleci-beanstalk-example-dev
 workflows:
   version: 2
   build-deploy:
