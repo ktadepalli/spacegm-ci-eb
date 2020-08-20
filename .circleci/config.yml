@@ -9,11 +9,14 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      -run
+      command: |
+        mkdir ~/repo/artifact
       - persist_to_workspace:
           root: ~/repo
           paths:
             - .
-            - /
+            -/artifact
       - run:
           name: Installing deployment dependencies
           working_directory: ~/repo
@@ -57,16 +60,13 @@ jobs:
           command: |
             dotnet publish -c debug -o  ~/repo/artifact
             cp ~/repo/aws-windows-deployment-manifest.json ~/repo/artifact  
-      - persist_to_workspace:
-          root: ~/repo/artifact
-          paths:
-            - .
+      
   deploy:
     <<: *defaults
     description: Build application with Release configuration
     steps:     
       - attach_workspace:
-          at: ~/repo/artitfact
+          at: ~/repo
       - run:
           name: Create AWS credentials manually
           command: |
