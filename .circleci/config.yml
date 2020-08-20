@@ -21,6 +21,7 @@ jobs:
     <<: *defaults
     description: Build application with Release configuration
     steps:     
+      - checkout
       - run:
           name: dotnet restore
           working_directory: ~/repo
