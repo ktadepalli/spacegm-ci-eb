@@ -58,8 +58,8 @@ jobs:
           working_directory: ~/repo/artifact
           command: |
             eb init --region us-east-1 --platform iis-10.0 spacegame 
-            eb deploy Spacegame-env
-            #eb create Spacegame-env
+            #eb deploy Spacegame-Dev
+            eb create Spacegame-Dev
 workflows:
   version: 2
   Build-deploy:
