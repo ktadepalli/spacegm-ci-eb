@@ -1,0 +1,124 @@
+version: 2
+
+_defaults: &defaults
+  working_directory: ~/repo
+  docker:
+   - image: mcr.microsoft.com/dotnet/core/sdk
+jobs:
+  checkout:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+         command: |
+           mkdir ~/repo/artifact
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - .
+            - ./artifact
+            
+  restore:
+    <<: *defaults
+    description: Build application with Release configuration
+    steps:     
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: dotnet restore
+          working_directory: ~/repo
+          command: |
+            dotnet restore 
+  build:
+    <<: *defaults
+    description: Build application with Release configuration
+    steps:     
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: dotnet restore
+          working_directory: ~/repo
+          command: |
+            dotnet build  
+  publish:
+    <<: *defaults
+    description: Build application with Release configuration
+    steps:     
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: dotnet restore
+          working_directory: ~/repo
+          command: |
+            dotnet publish -c debug -o  ~/repo/artifact
+            cp ~/repo/aws-windows-deployment-manifest.json ~/repo/artifact  
+      
+  deploy:
+    <<: *defaults
+    description: Build application with Release configuration
+    steps:     
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Installing deployment dependencies
+          working_directory: ~/repo
+          command: |
+            apt-get -y -qq update
+            apt-get install -y python-pip python-dev build-essential
+            pip install  --upgrade setuptools
+            pip install  awsebcli --upgrade
+      - run:
+          name: Create AWS credentials manually
+          command: |
+            mkdir ~/repo/artifact/.aws
+            touch ~/repo/artifact/.aws/config
+            chmod 600 ~/repo/artifact/.aws/config
+            echo "[profile kenani]" > ~/repo/artifact/.aws/config
+            echo "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/repo/artifact/.aws/config
+            echo "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/repo/artifact/.aws/config
+      - run:
+          name: Deploy to EB if branch is Master
+          working_directory: ~/repo/artifact
+          command: |
+            eb init --region us-east-1 --platform iis-10.0 circleci-beanstalk-example 
+            eb create circleci-beanstalk-example-master
+           # eb deploy circleci-beanstalk-example-test
+            
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - checkout:
+          filters:
+            branches:
+              only:
+                - master
+                
+      - restore:
+          requires:
+            - checkout
+          filters:
+            branches:
+              only:
+                - master     
+      - build:
+          requires:
+            - restore
+          filters:
+            branches:
+              only:
+                - master
+      - publish:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+      - deploy:
+          requires:
+            - publish
+          filters:
+            branches:
+              only:
+                - master              
