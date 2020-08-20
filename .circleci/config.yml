@@ -57,9 +57,9 @@ jobs:
           name: Deploy to EB if branch is Master
           working_directory: ~/repo/artifact
           command: |
-            eb init --region us-east-1 --platform iis-10.0 circleci-beanstalk 
-            eb deploy circleci-beanstalk-dev
-            #eb create circleci-beanstalk-dev
+            eb init --region us-east-1 --platform iis-10.0 spacegame 
+            eb deploy Spacegame-env
+            #eb create Spacegame-env
 workflows:
   version: 2
   Build-deploy:
