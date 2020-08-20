@@ -17,14 +17,6 @@ jobs:
           paths:
             - .
             - ./artifact
-      - run:
-          name: Installing deployment dependencies
-          working_directory: ~/repo
-          command: |
-            apt-get -y -qq update
-            apt-get install -y python-pip python-dev build-essential
-            pip install  --upgrade setuptools
-            pip install  awsebcli --upgrade
             
   restore:
     <<: *defaults
@@ -67,6 +59,14 @@ jobs:
     steps:     
       - attach_workspace:
           at: ~/repo
+      - run:
+          name: Installing deployment dependencies
+          working_directory: ~/repo
+          command: |
+            apt-get -y -qq update
+            apt-get install -y python-pip python-dev build-essential
+            pip install  --upgrade setuptools
+            pip install  awsebcli --upgrade
       - run:
           name: Create AWS credentials manually
           command: |
