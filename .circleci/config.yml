@@ -62,17 +62,17 @@ jobs:
             #eb create circleci-beanstalk-dev
 workflows:
   version: 2
-  publish-deploy:
+  Build-deploy:
     jobs:
 
-      - publish:
+      - Build:
           filters:
             branches:
               only:
                 - master
       - deploy:
           requires:
-            - publish
+            - Build
           filters:
             branches:
               only:
